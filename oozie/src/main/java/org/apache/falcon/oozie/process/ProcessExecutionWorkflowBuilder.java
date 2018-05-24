@@ -199,8 +199,14 @@ public abstract class ProcessExecutionWorkflowBuilder extends OozieOrchestration
         for (Entry<Object, Object> entry: entityProperties.entrySet()) {
             org.apache.falcon.oozie.workflow.CONFIGURATION.Property configProperty =
                 new org.apache.falcon.oozie.workflow.CONFIGURATION.Property();
-            configProperty.setName((String) entry.getKey());
-            configProperty.setValue((String) entry.getValue());
+            String name = (String) entry.getKey();
+            String value = (String) entry.getValue();
+            configProperty.setName(name);
+            if (value.startsWith("${coord:") && value.endsWith("}")) {
+                value = "${" + name + "}";
+                entry.setValue(value);
+            }
+            configProperty.setValue(value);
             configuration.add(configProperty);
 
             if (paramList != null) {

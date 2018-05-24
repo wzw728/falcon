@@ -431,6 +431,12 @@ public class FalconClient extends AbstractFalconClient {
         return getResponse(APIResult.class, clientResponse);
     }
 
+    public APIResult submit(String entiType,  InputStream is, String doAsUser) {
+        ClientResponse clientResponse = new ResourceBuilder().path(Entities.SUBMIT.path, entiType)
+                .addQueryParam(DO_AS_OPT, doAsUser).call(Entities.SUBMIT, is);
+        return getResponse(APIResult.class, clientResponse);
+    }
+
     public APIResult update(String entityType, String entityName, String filePath,
                             Boolean skipDryRun, String doAsUser) {
         InputStream entityStream = getServletInputStream(filePath);
@@ -438,6 +444,14 @@ public class FalconClient extends AbstractFalconClient {
         ClientResponse clientResponse = new ResourceBuilder().path(operation.path, entityType, entityName)
             .addQueryParam(SKIP_DRYRUN, skipDryRun).addQueryParam(DO_AS_OPT, doAsUser)
             .call(operation, entityStream);
+        return getResponse(APIResult.class, clientResponse);
+    }
+
+    public APIResult update(String entityType, String entityName, InputStream is, Boolean skipDryRun, String doAsUser) {
+        Entities operation = Entities.UPDATE;
+        ClientResponse clientResponse = new ResourceBuilder().path(operation.path, entityType, entityName)
+                .addQueryParam(SKIP_DRYRUN, skipDryRun).addQueryParam(DO_AS_OPT, doAsUser)
+                .call(operation, is);
         return getResponse(APIResult.class, clientResponse);
     }
 
